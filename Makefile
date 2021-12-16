@@ -5,8 +5,8 @@ clean:
 
 virtualenv:
 	virtualenv --prompt '|> ubw <| ' env
-	env/bin/pip install -r requirements-dev.txt
-	env/bin/python setup.py develop
+	env/Scripts/pip install -r requirements-dev.txt
+	env/Scripts/python setup.py develop
 	@echo
 	@echo "VirtualENV Setup Complete. Now run: source env/bin/activate"
 	@echo
