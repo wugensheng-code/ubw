@@ -3,10 +3,8 @@ from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 from .core.exc import ubwError
 from .controllers.base import Base
-
-# configuration defaults
-CONFIG = init_defaults('ubw')
-CONFIG['ubw']['foo'] = 'bar'
+from .ext.ext_loguru import LoguruLogHandler
+from loguru import logger
 
 
 class ubw(App):
@@ -26,6 +24,7 @@ class ubw(App):
             'yaml',
             'colorlog',
             'jinja2',
+            'ubw.ext.ext_loguru'
         ]
 
         # configuration handler
@@ -35,14 +34,15 @@ class ubw(App):
         config_file_suffix = '.yml'
 
         # set the log handler
-        log_handler = 'colorlog'
+        log_handler = 'loguru'
 
         # set the output handler
         output_handler = 'jinja2'
 
         # register handlers
         handlers = [
-            Base
+            Base,
+            LoguruLogHandler
         ]
 
 
@@ -53,6 +53,7 @@ class ubwTest(TestApp,ubw):
         label = 'ubw'
 
 
+@logger.catch
 def main():
     with ubw() as app:
         try:
