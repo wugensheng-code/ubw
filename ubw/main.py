@@ -1,11 +1,13 @@
-
+from os import getcwd
 from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 from .core.exc import ubwError
 from .controllers.base import Base
 from .ext.ext_loguru import LoguruLogHandler
 from loguru import logger
-
+from .ext.ext_build import BuildInterface
+from .ext.ext_debug import DebugInterface
+from .ext.ext_flash import FlashInterface
 
 class ubw(App):
     """ubw primary application."""
@@ -13,26 +15,28 @@ class ubw(App):
     class Meta:
         label = 'ubw'
 
-        # configuration defaults
-        config_defaults = CONFIG
-
         # call sys.exit() on close
         exit_on_close = True
 
         # load additional framework extensions
         extensions = [
-            'yaml',
-            'colorlog',
+            # 'yaml',
+            # 'colorlog',
             'jinja2',
-            'ubw.ext.ext_loguru'
+            'ubw.ext.ext_loguru',
+            'ubw.ext.ext_build',
+            'json'
         ]
 
-        # configuration handler
-        config_handler = 'yaml'
+        # List of config directories to search config files
+        # (appended to the builtin list of directories defined by Cement).
+        config_dirs = getcwd()
 
-        # configuration file suffix
-        config_file_suffix = '.yml'
-
+        # List of config files to parse
+        # (appended to the builtin list of config files defined by Cement).
+        config_files = [r'ubw.json']
+        config_handler = 'json'
+        config_file_suffix = '.json'
         # set the log handler
         log_handler = 'loguru'
 
@@ -43,6 +47,12 @@ class ubw(App):
         handlers = [
             Base,
             LoguruLogHandler
+        ]
+
+        interfaces = [
+            BuildInterface,
+            DebugInterface,
+            FlashInterface,
         ]
 
 
